@@ -366,7 +366,7 @@ if(first() | duped()){
     
 #Welcome Message------------------------------------------
 #    if(owner():steamID() != "STEAM_0:1:41116333"){ # Only welcomes people other than me.
-        print("Welcome "+owner():name()+"! Config starts on line 294.")
+        print("Welcome "+owner():name()+"! Config starts on line 388.")
         hint("Idean Shop 2 by Idean", 10)
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       #selfDestruct()
 #    }
