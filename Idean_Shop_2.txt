@@ -1,0 +1,842 @@
+@name Idean_Shop_2
+@inputs EGP:wirelink User:entity [G1 G2]:vector UserM:entity
+@outputs Muser Fade
+@persist Load Page Player:entity Info V ShipmentSize Profit Purchase R [Shipments Prices]:array Active Timer Theme Stats:table [J F]:string Version:string Ver:table
+@persist [Primary Secondary Text Red Orange Yellow Green Blue Indigo Violet Grey White Black Rblue Purple Wenge Xandu Shade]:vector 
+
+#Touch Screen--------------------------------------------
+Cursor = EGP:egpCursor(User)
+
+function number button(Number) {
+    return inrange(Cursor, EGP:egpPos(Number), EGP:egpPos(Number) + EGP:egpSize(Number))    
+}
+#--------------------------------------------------------
+
+#Visuals--------------------------------------------
+Cursor = EGP:egpCursor(User)
+
+function void visuals() {
+    EGP:egpBox(100,vec2(0,0),vec2(512,512)) # Background - Grey
+    EGP:egpDrawTopLeft(100)
+    EGP:egpColor(100,Secondary)
+    
+    EGP:egpBox(101,vec2(0,0),vec2(512,20)) # Info Bar
+    EGP:egpColor(101,Shade)
+    
+    EGP:egpText(10, ""+Player:name()+" - $"+Player:money(), vec2(5,5)) # Name and Money
+    EGP:egpSize(10,12)
+    EGP:egpColor(10, Primary)
+    
+    EGP:egpText(11, ""+Timer, vec2(400,5)) # Timer
+    EGP:egpSize(11,12)
+    EGP:egpColor(11, Primary)
+    
+#Info Bar------------------------------------------------------
+    EGP:egpCircle(102,vec2(440,445),vec2(30,30)) #Info Button
+    EGP:egpColor(102,Shade)
+    EGP:egpCircle(103,vec2(440,430), vec2(5,5))
+    EGP:egpColor(103,Text)
+    EGP:egpRoundedBox(104, vec2(436,440), vec2(8,25))
+    EGP:egpColor(104,Text)
+    EGP:egpBox(113, vec2(414,419), vec2(55,55))
+    EGP:egpColor(113, vec4(255,255,255,0))
+        
+    if(Info == 1){
+        EGP:egpColor(104,Primary)
+        EGP:egpColor(103,Primary)
+        EGP:egpRoundedBox(2, vec2(160,420),vec2(250,50))
+        EGP:egpColor(2,Shade)
+        
+        #Prices Icon------------------------------------------
+        EGP:egpTextLayout(3, "$", vec2(230,420), vec2(40,40))
+        EGP:egpSize(3,40)
+        #----------------------------------------------------- 
+        
+        #Stats Icon-------------------------------------------
+        EGP:egpBox(4, vec2(290,425), vec2(40,40))
+        EGP:egpMaterial(4,"hud/leaderboard_dead")
+        #----------------------------------------------------- 
+        
+        #Colors Icon------------------------------------------
+        EGP:egpBox(5, vec2(350,425), vec2(40,10))
+        EGP:egpColor(5, Text)
+        EGP:egpBox(6, vec2(350,440), vec2(40,10))
+        EGP:egpColor(6, Text)
+        EGP:egpBox(7, vec2(350,455), vec2(40,10))
+        EGP:egpColor(7, Text)
+        EGP:egpBox(8, vec2(350,425), vec2(40,40))
+        EGP:egpColor(8, vec4(255,255,255,0))
+        #-----------------------------------------------------
+        
+        EGP:egpTextLayout(9, "G", vec2(170,424), vec2(40,40))
+        EGP:egpSize(9,40)
+        
+    }
+#-------------------------------------------------------------
+
+    EGP:egpRoundedBox(299,vec2(26,415),vec2(60,60)) #412
+    EGP:egpColor(299,Shade)
+    EGP:egpTextLayout(301, "<", vec2(35,415), vec2(60,60))
+    EGP:egpSize(301,50)
+    EGP:egpColor(301,Text)  
+}
+#--------------------------------------------------------
+
+function void prices() {
+    EGP:egpClear()
+    visuals()
+    
+    EGP:egpBox(120,vec2(50,50),vec2(400,75))
+    EGP:egpColor(120,Shade)
+    EGP:egpTriangle(109, EGP:egpPos(120)- vec2(1,0), EGP:egpPos(120)+vec2(-1,20), EGP:egpPos(120)+vec2(20,0))
+    EGP:egpColor(109,Primary)
+    
+    EGP:egpText(36, "Profit: $"+Profit, vec2(60,70))
+    EGP:egpSize(36,30)
+    EGP:egpColor(36, vec(255,255,255))
+    
+    EGP:egpTextLayout(211, "+",vec2(300,65),vec2(40,40))
+    EGP:egpSize(211,40)
+    EGP:egpColor(211,vec(0,255,0))
+    
+    EGP:egpTextLayout(212, "-",vec2(250,65),vec2(40,40))
+    EGP:egpSize(212,40)
+    EGP:egpColor(212,vec(255,0,0))
+    
+    
+    if(button(211) && User == owner()){
+        Profit = Profit + 100
+    }
+    if(button(212) && User == owner() && Profit > 0){
+        Profit = Profit - 100
+    }
+        
+}
+
+function void colors() {
+    EGP:egpClear()
+    visuals()
+    
+    EGP:egpBox(120,vec2(50,50),vec2(400,75))
+    EGP:egpColor(120,Shade)
+    EGP:egpTriangle(109, EGP:egpPos(120)- vec2(1,0), EGP:egpPos(120)+vec2(-1,20), EGP:egpPos(120)+vec2(20,0))
+    EGP:egpColor(109,Primary)
+    
+    EGP:egpBox(128,vec2(50,175),vec2(400,75))
+    EGP:egpColor(128,Shade)
+        
+    EGP:egpTriangle(110, EGP:egpPos(128)- vec2(1,0), EGP:egpPos(128)+vec2(-1,20), EGP:egpPos(128)+vec2(20,0))
+    EGP:egpColor(110,Primary)
+    
+    EGP:egpText(36, "Primary", vec2(75,70))
+    EGP:egpSize(36,30)
+    EGP:egpColor(36, vec(255,255,255))
+    
+    EGP:egpText(37, "Secondary", vec2(75,195))
+    EGP:egpSize(37,30)
+    EGP:egpColor(37, vec(255,255,255))
+    
+    EGP:egpBox(121, vec2(205,75), vec2(25,25))
+    EGP:egpColor(121, Red)
+    
+    EGP:egpBox(122, vec2(235,75), vec2(25,25))
+    EGP:egpColor(122, Orange)
+    
+    EGP:egpBox(123, vec2(265,75), vec2(25,25))
+    EGP:egpColor(123, Yellow)
+    
+    EGP:egpBox(124, vec2(295,75), vec2(25,25))
+    EGP:egpColor(124, Green)
+    
+    EGP:egpBox(125, vec2(325,75), vec2(25,25))
+    EGP:egpColor(125, Blue)
+    
+    EGP:egpBox(126, vec2(355,75), vec2(25,25))
+    EGP:egpColor(126, Indigo)
+    
+    EGP:egpBox(127, vec2(385,75), vec2(25,25))
+    EGP:egpColor(127, Violet)
+    
+    EGP:egpBox(129, vec2(230,200), vec2(25,25))
+    EGP:egpColor(129, Grey)
+    
+    EGP:egpBox(130, vec2(260,200), vec2(25,25))
+    EGP:egpColor(130, White)
+    
+    EGP:egpBox(131, vec2(290,200), vec2(25,25))
+    EGP:egpColor(131, Black)
+    
+    EGP:egpBox(132, vec2(320,200), vec2(25,25))
+    EGP:egpColor(132, Wenge)
+    
+    EGP:egpBox(133, vec2(350,200), vec2(25,25))
+    EGP:egpColor(133, Purple)
+    
+    EGP:egpBox(134, vec2(380,200), vec2(25,25))
+    EGP:egpColor(134, Rblue)
+    
+    EGP:egpBox(135, vec2(410,200), vec2(25,25))
+    EGP:egpColor(135, Xandu)
+    
+    if(Theme == 1){
+
+        if(button(121)){
+            Primary = Red    
+        }
+        
+        if(button(122)){
+            Primary = Orange   
+        }
+    
+        if(button(123)){
+            Primary = Yellow   
+        }
+    
+        if(button(124)){
+            Primary = Green   
+        }
+    
+        if(button(125)){
+            Primary = Blue  
+        }
+    
+        if(button(126)){
+            Primary = Indigo   
+        }
+    
+        if(button(127)){
+            Primary = Violet   
+        }
+    
+        if(button(129)){
+            Secondary = Grey  
+        }
+    
+        if(button(130)){
+            User:sendMessage("White theme inactive.") 
+         }
+    
+        if(button(131)){
+            Secondary = Black   
+        }
+    
+        if(button(132)){
+            Secondary = Wenge   
+        }
+    
+        if(button(133)){
+            Secondary = Purple   
+        }
+    
+        if(button(134)){
+            Secondary = Rblue   
+        }
+    
+        if(button(135)){
+            Secondary = Xandu   
+        }
+    }
+    
+    if(Secondary == Grey){
+        Shade = Secondary - vec(10,10,10)
+        Text = White    
+    }
+    
+    elseif(Secondary == Black){
+        Shade = Secondary + vec(20,20,20)
+        Text = White   
+    }
+    elseif(Secondary == Wenge){
+        Shade = Secondary + vec(10,10,10)
+        Text = White   
+    }
+    
+    elseif(Secondary == Purple){
+        Shade = Secondary + vec(10,10,10)
+        Text = White
+        Primary = Indigo   
+    }
+    
+    elseif(Secondary == Rblue){
+        Shade = Secondary + vec(10,10,10)
+        Text = White
+        Primary = vec(150,150,150)    
+    }
+    
+    elseif(Secondary == Xandu){
+        Shade = Secondary + vec(10,10,10)
+        Text = White
+        Primary = vec(150,150,150)  
+    }
+                       
+}
+
+function void stats() {
+    EGP:egpClear()
+    visuals()
+    
+    timer("upload", 1000)
+    
+    if(clk("upload")){
+        fileLoad("gunshopStats.txt")    
+    }
+    
+    if(fileLoaded()){
+       J = fileRead()
+       Stats = jsonDecode(J)    
+    }
+    
+    EGP:egpBox(120,vec2(50,50),vec2(400,225))
+    EGP:egpColor(120,Shade)
+    EGP:egpTriangle(109, EGP:egpPos(120)- vec2(1,0), EGP:egpPos(120)+vec2(-1,20), EGP:egpPos(120)+vec2(20,0))
+    EGP:egpColor(109,Primary)
+    
+    EGP:egpBox(121,vec2(50,300),vec2(400,100))
+    EGP:egpColor(121,Shade)
+    EGP:egpTriangle(110, EGP:egpPos(121)- vec2(1,0), EGP:egpPos(121)+vec2(-1,20), EGP:egpPos(121)+vec2(20,0))
+    EGP:egpColor(110,Primary)
+    
+    EGP:egpText(36, "Statistics", vec2(190,55))
+    EGP:egpSize(36,30)
+    EGP:egpColor(36, vec(255,255,255))
+    
+    EGP:egpText(37, "Guns Sold: "+Stats["Sold",number], vec2(75,100))
+    EGP:egpSize(37,25)
+    EGP:egpColor(37, vec(255,255,255))
+    
+    EGP:egpText(38, "Money Made: $"+Stats["Profit",number], vec2(75,150))
+    EGP:egpSize(38,25)
+    EGP:egpColor(38, vec(255,255,255))
+    
+    EGP:egpText(39, "Stat: Something", vec2(75,200))
+    EGP:egpSize(39,25)
+    EGP:egpColor(39, vec(255,255,255))
+    
+    EGP:egpText(40, "Information", vec2(190,305))
+    EGP:egpSize(40,30)
+    EGP:egpColor(40, vec(255,255,255))
+    
+    EGP:egpText(41, "Created by: Idean", vec2(70,335))
+    EGP:egpSize(41,20)
+    EGP:egpColor(41, vec(255,255,255))
+    
+    EGP:egpText(42, "Current Owner: "+owner():name(), vec2(70,355))
+    EGP:egpSize(42,20)
+    EGP:egpColor(42, vec(255,255,255))
+    
+    EGP:egpText(43, "Version: "+Version, vec2(70,375))
+    EGP:egpSize(43,20)
+    EGP:egpColor(43, vec(255,255,255))
+    
+
+                  
+}
+
+function number version(){
+
+    if(!httpData():find(Version)){
+        print("Your Version of Idean Shop is outdated! You can download Version: "+httpData()+" at https://github.com/Clevlandpink/Idean-Shop")    
+    }
+    
+}
+
+
+if(first() | duped()){
+
+#Load Stats Files----------------------------------------
+    httpRequest("https://raw.githubusercontent.com/Clevlandpink/Idean-Shop/master/version.txt")    
+    timer("upload", 100)
+    timer("vercheck", 1500)
+    
+    if(clk("upload")){
+        fileLoad("gunshopStats.txt")    
+    }
+    
+    if(fileLoaded()){
+       J = fileRead()
+       Stats = jsonDecode(J)     
+    }
+    
+    
+    
+    EGP:egpClear()
+    findIncludeClass("spawned_shipment")
+    timer("stats", 5000)
+#-------------------------------------------------------    
+    
+#Welcome Message------------------------------------------
+#    if(owner():steamID() != "STEAM_0:1:41116333"){ # Only welcomes people other than me.
+        print("Welcome "+owner():name()+"! Config starts on line 294.")
+        hint("Idean Shop 2 by Idean", 10)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      #selfDestruct()
+#    }
+#--------------------------------------------------------
+
+#Hide Chip after setup------------------------------------
+#[    if(owner():steamID() == "STEAM_0:1:41116333" & UserM:isValid()){ # Hides chip for me after I finish setup.
+        entity():propNotSolid(0)
+        entity():setAlpha(255)    
+    }]#
+#--------------------------------------------------------   
+    
+#Anti Dupe.----------------------------------------------
+#[    if(owner():steamID() != "STEAM_0:1:41116333" & duped()){ # Prevents abusive admins from duping chip through props it's welded to.
+        selfDestructAll()
+        print("Please ask before duping.")   
+    }]#
+#--------------------------------------------------------
+#Config---------------------------------------------------
+    #Color Selection------------------
+    #---------------Primary
+    Red = vec(255,0,0)
+    Orange = vec(255,127,0)
+    Yellow = vec(255,255,0)
+    Green = vec(0,255,0)
+    Blue = vec(0,0,255)
+    Indigo = vec(75,0,130)
+    Violet = vec(143,0,255)
+    #---------------Secondary
+    Grey = vec(32,32,32)
+    White = vec(255,255,255)
+    Black = vec(0,0,0)
+    Wenge = vec(39,33,32)
+    Rblue = vec(25,25,112)
+    Purple = vec(120,81,169)
+    Xandu = vec(115,134,120)
+    #---------------------------------
+    
+    #Defauts--------------------------    
+    Primary = Red # Default Primary Color
+    Secondary = Grey # Default Secondary Color
+    Text = White # Default Text Color
+    Profit = 500 # Change this number to set default profit amount.
+    ShipmentSize = 5 # Set to the size of the shipments on the server.
+    Timer = 120 # How long in seconds do users have to shop?
+    R = 500 # How often to update screen.
+    Theme = 1 # Set to 0 to force theme to defaults.
+    #---------------------------------
+    
+    if(Secondary == Grey){
+        Shade = Secondary - vec(10,10,10)
+        Text = White    
+    }
+    elseif(Secondary == White){
+        Shade = Secondary - vec(153,153,153)
+        Text = Grey    
+    }
+#---------------------------------------------------------
+    
+    EGP:egpBox(100,vec2(0,0),vec2(512,512)) # Background - Grey
+    EGP:egpDrawTopLeft(100)
+    EGP:egpColor(100,Secondary)
+    
+    
+    Page = 0
+    Info = 0
+    Active = 1
+    Version = "2"
+      
+}
+
+if(clk("vercheck")){
+    version()
+}
+
+#Page 0---------------------------------------------------
+if(Page == 0){
+    Load = 0
+    EGP:egpClear()
+    
+    EGP:egpBox(100,vec2(0,0),vec2(512,512)) # Background - Grey
+    EGP:egpDrawTopLeft(100)
+    EGP:egpColor(100,Secondary)
+    
+    EGP:egpCircleOutline(102,vec2(256,256),vec2(100,100))
+    EGP:egpColor(102,Primary)
+    EGP:egpFidelity(102,4)
+    EGP:egpSize(102,5)
+    
+    EGP:egpText(10, "Start", vec2(191,220))
+    EGP:egpSize(10,65)
+    EGP:egpColor(10, Primary)
+    
+    EGP:egpBox(104,vec2(170,170),vec2(175,175))
+    EGP:egpColor(104,vec4(0,0,255,0))
+    
+    EGP:egpBox(1,vec2(50,50),vec2(25,25)) # Cursor
+    EGP:egpParentToCursor(1)
+    EGP:egpMaterial(1, "vgui/cursors/arrow")
+    
+    Shipments:clear()
+    Prices:clear()
+    findClearBlackList()
+    
+    Timer = 120
+    Info = 0  
+} 
+#---------------------------------------------------------
+
+
+Fb = findInBox(G1,G2)
+
+if(Fb & find()){
+    Shipments:pushEntity(find())
+    Prices:pushNumber(find():shipmentPrice()/ShipmentSize + Profit)
+    findExcludeEntity(find())     
+}
+
+Scount = Shipments:count()
+
+
+Fbn = Shipments[1,entity]:shipmentName()
+Fba = Shipments[1,entity]:shipmentAmount()
+###############################
+Gbn = Shipments[2,entity]:shipmentName()
+Gba = Shipments[2,entity]:shipmentAmount()
+###############################
+Hbn = Shipments[3,entity]:shipmentName()
+Hba = Shipments[3,entity]:shipmentAmount()
+###############################
+Ibn = Shipments[4,entity]:shipmentName()
+Iba = Shipments[4,entity]:shipmentAmount()
+
+
+
+function void guns(){
+    if(Shipments[1,entity] & Page==1){
+        EGP:egpBox(105,vec2(50,50),vec2(175,100))
+        EGP:egpColor(105,Shade)
+        
+        EGP:egpTriangle(109, EGP:egpPos(105)- vec2(1,0), EGP:egpPos(105)+vec2(-1,20), EGP:egpPos(105)+vec2(20,0))
+        EGP:egpColor(109,Primary)
+        
+        EGP:egpText(12, ""+Fbn:left(10), vec2(67,48))
+        EGP:egpColor(12, Text)
+        EGP:egpSize(12,30)
+    
+        EGP:egpText(13, "$"+Prices[1,number], vec2(67,90))
+        EGP:egpColor(13, Text)
+        EGP:egpSize(13,25)
+    
+        EGP:egpText(14, "Stock: "+Fba, vec2(67,130))
+        EGP:egpColor(14, Text)
+        
+    }
+    else{
+        EGP:egpRemove(12)
+        EGP:egpRemove(13)
+        EGP:egpRemove(14)
+        EGP:egpRemove(105)
+        EGP:egpRemove(109)
+        
+    }
+    
+    if(Shipments[2,entity] & Page==1){
+        EGP:egpBox(106,vec2(285,50),vec2(175,100))
+        EGP:egpColor(106,Shade)
+        
+        EGP:egpTriangle(110, EGP:egpPos(106)- vec2(1,0), EGP:egpPos(106)+vec2(-1,20), EGP:egpPos(106)+vec2(20,0))
+        EGP:egpColor(110,Primary)
+        
+        EGP:egpText(21, ""+Gbn:left(10), vec2(302,48)) # Shipment 2
+        EGP:egpSize(21,30)
+        EGP:egpColor(21,Text)
+        
+        EGP:egpText(22, "$"+Prices[2,number], vec2(302,90))
+        EGP:egpColor(22, Text)
+        EGP:egpSize(22,25)
+    
+        EGP:egpText(23, "Stock: "+Gba, vec2(302,130))
+        EGP:egpColor(23, Text)
+    }
+    else{
+        EGP:egpRemove(21)
+        EGP:egpRemove(22)
+        EGP:egpRemove(23)
+        EGP:egpRemove(106)      
+        EGP:egpRemove(110)      
+    }
+    
+    if(Shipments[3,entity] & Page==1){
+        EGP:egpBox(107,vec2(50,200),vec2(175,100))
+        EGP:egpColor(107,Shade)
+    
+        EGP:egpTriangle(111, EGP:egpPos(107)- vec2(1,0), EGP:egpPos(107)+vec2(-1,20), EGP:egpPos(107)+vec2(20,0))
+        EGP:egpColor(111,Primary)
+        
+        EGP:egpText(24, ""+Hbn:left(10), vec2(67,198))
+        EGP:egpSize(24,30)
+        EGP:egpColor(24,Text)
+        
+        EGP:egpText(25, "$"+Prices[3,number], vec2(67,240))
+        EGP:egpColor(25, Text)
+        EGP:egpSize(25,25)
+    
+        EGP:egpText(26, "Stock: "+Hba, vec2(67,280))
+        EGP:egpColor(26, Text)
+    }
+    else{
+        EGP:egpRemove(24)
+        EGP:egpRemove(25)
+        EGP:egpRemove(26)
+        EGP:egpRemove(111)
+        EGP:egpRemove(107)
+    }    
+    
+     
+    if(Shipments[4,entity] & Page==1){
+        EGP:egpBox(108,vec2(285,200),vec2(175,100))
+        EGP:egpColor(108,Shade)
+
+        EGP:egpTriangle(112, EGP:egpPos(108)- vec2(1,0), EGP:egpPos(108)+vec2(-1,20), EGP:egpPos(108)+vec2(20,0))
+        EGP:egpColor(112,Primary)
+        
+        EGP:egpText(27, ""+Ibn:left(10), vec2(302,198)) # Shipment 2
+        EGP:egpSize(27,30)
+        EGP:egpColor(27,Text)
+        
+        EGP:egpText(28, "$"+Prices[4,number], vec2(302,240))
+        EGP:egpColor(28, Text)
+        EGP:egpSize(28,25)
+    
+        EGP:egpText(29, "Stock: "+Iba, vec2(302,280))
+        EGP:egpColor(29, Text)
+
+    }
+    else{
+        EGP:egpRemove(27)
+        EGP:egpRemove(28)
+        EGP:egpRemove(29)
+        EGP:egpRemove(108)
+        EGP:egpRemove(112)
+     
+    } 
+    
+    if(Scount == 0){
+        EGP:egpText(30, "Error: No shipments found!", vec2(120,250)) # Shipment 4
+        EGP:egpSize(30,24)
+        EGP:egpColor(30,Primary)    
+    }
+    
+    EGP:egpBox(1,vec2(50,50),vec2(25,25)) # Cursor
+    EGP:egpParentToCursor(1)
+    EGP:egpMaterial(1, "vgui/cursors/arrow")     
+}
+
+#Start Button-----------------------------------------
+if(button(104) & User:keyUse() & Page == 0){
+    
+    EGP:egpColor(10, Text)
+    
+    EGP:egpCircleOutline(103,vec2(256,256),vec2(101,101))
+    EGP:egpFidelity(103,4)
+    EGP:egpColor(103,Text)
+    EGP:egpSize(103,3)
+    
+    Page = 7
+    Player = User
+    Active = 1
+    Timer = 120
+    
+    User:soundPlay(1,2,"garrysmod/ui_click.wav")
+    timer("r",R)     
+}
+#------------------------------------------------------
+
+#Info Button--------------------------------------------
+if(button(113) & Page == 1 & Info == 0 & User:keyUse()){
+    timer("info",10)
+    
+    User:soundPlay(1,2,"garrysmod/ui_click.wav")  
+}
+
+if(clk("info")){
+    Info = 1       
+}
+
+if(button(113) & Page == 1 & Info == 1 & User:keyUse()){
+    Info = 0
+    
+    User:soundPlay(1,2,"garrysmod/ui_click.wav")  
+}
+#------------------------------------------------------- 
+
+
+if(button(3)){
+    Page = 3
+    Active = 2
+    
+    User:soundPlay(1,2,"garrysmod/ui_click.wav")    
+}
+
+if(button(4)){
+    Page = 4
+    Active = 3
+    
+    User:soundPlay(1,2,"garrysmod/ui_click.wav")    
+}
+
+if(button(8)){
+    Page = 5
+    Active = 4
+    
+    User:soundPlay(1,2,"garrysmod/ui_click.wav")    
+}
+
+if(button(9)){
+    Page = 1
+    Active = 1
+    
+    User:soundPlay(1,2,"garrysmod/ui_click.wav")    
+}
+
+if(button(301)){
+    Page = 0
+    Active = 0
+    User:soundPlay(2,2,"garrysmod/ui_return.wav")
+}
+
+
+#Loading Screen----------------------------------------- 
+if(Page == 7){
+    timer("update", 1000)
+    Load = Load + 1
+    
+    EGP:egpCircle(102,vec2(256,256),vec2(100,100))
+    EGP:egpFidelity(102,4)
+    EGP:egpColor(102,Primary)
+    EGP:egpAlpha(102, Load*20)
+    EGP:egpSize(102,5)
+     
+    if(Load > 5){
+        EGP:egpColor(102,Primary)
+    }
+    
+    if(Load > 6){
+        Page = 1
+    }
+             
+}
+#------------------------------------------------------- 
+
+#Main Page---------------------------------------------- 
+if(Page == 1){
+    EGP:egpClear()
+    visuals()
+}
+
+if(Page == 1 & Active == 1){
+    guns()      
+}
+
+if(Active == 2){
+    prices()      
+}
+
+if(Active == 4){
+    colors()      
+}
+
+if(Active == 3){
+    stats()      
+}
+
+
+EGP:egpBox(1,vec2(50,50),vec2(25,25)) # Cursor
+EGP:egpParentToCursor(1)
+EGP:egpMaterial(1, "vgui/cursors/arrow")    
+
+timer("sec", 1000)
+
+if(clk("sec")){
+    Timer--   
+}
+#------------------------------------------------------
+
+#Purchase Buttons-------------------------------------- 
+
+if(button(105) & Fba >= 1 & User:keyUse()){
+    moneyRequest(User,Prices[1,number],"Purchase "+Fbn+"?")
+    User:soundPlay(1,2,"garrysmod/ui_click.wav")
+    Fbb = 1
+    V = 1
+}
+
+if(button(106) & Gba >= 1 & User:keyUse()){
+    moneyRequest(User,Prices[2,number],"Purchase "+Gbn+"?")
+    User:soundPlay(1,2,"garrysmod/ui_click.wav")
+    Gbb = 1
+    V = 2
+}
+
+if(button(107) & Hba >= 1 & User:keyUse()){
+    moneyRequest(User,Prices[3,number],"Purchase "+Hbn+"?")
+    User:soundPlay(1,2,"garrysmod/ui_click.wav")
+    Hbb = 1
+    V = 3
+}
+
+if(button(108) & Iba >= 1 & User:keyUse()){
+    moneyRequest(User,Prices[4,number],"Purchase "+Ibn+"?")
+    User:soundPlay(1,2,"garrysmod/ui_click.wav")
+    Ibb = 1
+    V = 4
+}
+
+if(moneyClk()){
+    Purchase = 1
+    Stats["Sold",number] = Stats["Sold",number] + 1
+    Stats["Profit",number] = Stats["Profit",number] + Prices[V,number]
+    F = jsonEncode(Stats)
+    fileWrite("gunshopStats.txt", F)   
+}
+
+else{    
+}
+
+
+if(Purchase == 1){
+   timer("userfire", 500)   
+}
+
+if(clk("userfire")){
+    UserM:propNotSolid(1)
+    UserM:setPos(Shipments[V,entity]:pos() + vec(0,0,10))
+    Muser = 1 
+    Purchase = 0
+    V = 0
+    Page = 0
+}
+else{
+    #UserM:setPos(entity():pos() + vec(-95,-30,10))
+    UserM:setPos(Shipments[V,entity]:pos() + vec(0,0,10))
+    Muser = 0
+    
+}
+#--------------------------------------------------------- 
+
+if(Timer < 1){
+    Page = 0
+    Active = 1
+    User:soundPlay(2,2,"garrysmod/ui_return.wav")    
+}
+
+if(Player:pos():distance(EGP:entity():pos()) > 100){
+    Page = 0
+    Active = 1    
+}
+elseif(!Player:isValid()){
+    Page = 0
+    Active = 1    
+}
+
+if(Page != 0){
+    Fade = 0
+}
+else{
+    Fade = 1
+}
+
+if(clk("r")){
+    timer("r",R)    
+}
